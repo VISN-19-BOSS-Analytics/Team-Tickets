@@ -1,0 +1,44 @@
+name: Auto Label Issues
+
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      - name: Label based on priority
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const priority = context.payload.issue.labels.find(label => 
+              label.name.toLowerCase().includes('priority')
+            );
+            if (priority) {
+              if (priority.name.toLowerCase().includes('urgent')) {
+                github.issues.addLabels({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.payload.issue.number,
+                  labels: ['Urgent']
+                });
+              } else if (priority.name.toLowerCase().includes('high')) {
+                github.issues.addLabels({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.payload.issue.number,
+                  labels: ['High']
+                });
+              } else {
+                github.issues.addLabels({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.payload.issue.number,
+                  labels: ['Normal']
+                });
+              }
+            }
