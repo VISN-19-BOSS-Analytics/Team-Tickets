@@ -8,7 +8,9 @@ assignees: ''
 ---
 
 ### Issue Select
-[] Bug
+- [] Bug
+- [] Data Issue
+- [] Documentation Issue
 
 ### Description of the issue
 *Provide a clear and concise description of what the bug or error is.*
