@@ -2,7 +2,7 @@
 name: Report Request
 about: Submit a new report or dashboard request (Ad Hoc or Ongoing)
 title: "[Report Request] Brief Description"
-labels: ''
+labels: 'Report Request'
 assignees: ''
 
 ---
