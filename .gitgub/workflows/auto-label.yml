@@ -24,9 +24,9 @@ jobs:
               if (body.includes('urgent')) {
                 labels.push('Urgent');
               } else if (body.includes('high')) {
-                labels.push('High');
+                labels.push('High Priority');
               } else if (body.includes('normal')) {
-                labels.push('Normal');
+                labels.push('Normal Priority');
               } else {
                 labels.push('Low Priority');
               }
