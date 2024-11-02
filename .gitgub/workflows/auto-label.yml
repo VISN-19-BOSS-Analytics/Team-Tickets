@@ -1,4 +1,4 @@
-name: Auto Label Issues
+name: Auto Label Priority
 
 on:
   issues:
@@ -15,30 +15,31 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const priority = context.payload.issue.labels.find(label => 
-              label.name.toLowerCase().includes('priority')
-            );
-            if (priority) {
-              if (priority.name.toLowerCase().includes('urgent')) {
-                github.issues.addLabels({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: context.payload.issue.number,
-                  labels: ['Urgent']
-                });
-              } else if (priority.name.toLowerCase().includes('high')) {
-                github.issues.addLabels({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: context.payload.issue.number,
-                  labels: ['High']
-                });
+            const issue = context.payload.issue;
+            const body = issue.body.toLowerCase();
+            const labels = [];
+
+            // Check for priority in the issue body
+            if (body.includes('priority')) {
+              if (body.includes('urgent')) {
+                labels.push('Urgent');
+              } else if (body.includes('high')) {
+                labels.push('High');
+              } else if (body.includes('normal')) {
+                labels.push('Normal');
               } else {
-                github.issues.addLabels({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: context.payload.issue.number,
-                  labels: ['Normal']
-                });
+                labels.push('Low Priority');
               }
+            } else {
+              labels.push('Low Priority');
+            }
+
+            // Apply labels if any matched criteria
+            if (labels.length > 0) {
+              await github.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                labels: labels
+              });
             }
