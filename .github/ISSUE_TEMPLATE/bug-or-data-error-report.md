@@ -7,7 +7,10 @@ assignees: ''
 
 ---
 
-### Description of the Bug
+### Issue Select
+[] Bug
+
+### Description of the issue
 *Provide a clear and concise description of what the bug or error is.*
 
 ### Steps to Reproduce if a Bug
