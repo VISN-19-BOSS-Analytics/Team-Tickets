@@ -1,8 +1,10 @@
 ---
-name: Bug Report
-about: Report a bug or issue
+name: Bug or Data Error Report
+about: Report a bug or issue with the Data
 title: "[Bug] Brief Description"
 labels: bug
+assignees: ''
+
 ---
 
 ### Description of the Bug

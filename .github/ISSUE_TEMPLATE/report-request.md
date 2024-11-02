@@ -2,9 +2,10 @@
 name: Report Request
 about: Submit a new report or dashboard request (Ad Hoc or Ongoing)
 title: "[Report Request] Brief Description"
-labels: report-request
----
+labels: ''
+assignees: ''
 
+---
 
 ### Station Selection
 *Please select the station requesting this report.*
@@ -45,6 +46,3 @@ labels: report-request
 
 ### Additional Information
 *Include any relevant details, links, or screenshots.*
-
-
-
