@@ -20,12 +20,14 @@ jobs:
             const labels = [];
 
             // Check for priority in the issue body
-            if (body.includes('priority')) {
-              if (body.includes('urgent')) {
+            const priorityMatch = body.match(/priority\s*:\s*(urgent|high|normal|low)/);
+            if (priorityMatch) {
+              const priority = priorityMatch[1];
+              if (priority === 'urgent') {
                 labels.push('Urgent');
-              } else if (body.includes('high')) {
+              } else if (priority === 'high') {
                 labels.push('High Priority');
-              } else if (body.includes('normal')) {
+              } else if (priority === 'normal') {
                 labels.push('Normal Priority');
               } else {
                 labels.push('Low Priority');
@@ -36,7 +38,7 @@ jobs:
 
             // Apply labels if any matched criteria
             if (labels.length > 0) {
-              await github.issues.addLabels({
+              await context.github.issues.addLabels({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: issue.number,
