@@ -2,7 +2,7 @@ name: Set Status Based on Report Type
 
 on:
   issues:
-    types: [opened, edited]
+    types: [opened]
 
 jobs:
   set_status:
