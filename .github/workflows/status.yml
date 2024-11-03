@@ -15,16 +15,15 @@ jobs:
         id: report_type
         run: |
           if [[ "${{ github.event.issue.title }}" == *"Bug or Data Error"* ]]; then
-            echo "::set-output name=type::Bug"
+            echo "type=Bug" >> $GITHUB_ENV
           elif [[ "${{ github.event.issue.title }}" == *"Feature Request"* ]]; then
-            echo "::set-output name=type::Feature"
+            echo "type=Feature" >> $GITHUB_ENV
           else
-            echo "::set-output name=type::Other"
-          fi
+            echo "type=Other" >> $GITHUB_ENV
 
       - name: Set status based on report type
         run: |
-          case "${{ steps.report_type.outputs.type }}" in
+          case "${{ env.type }}" in
             "Bug")
               echo "Setting status to 'Backlog'"
               ;;
