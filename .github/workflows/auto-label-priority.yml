@@ -1,25 +1,11 @@
-name: Auto Label Priority
-
-on:
-  issues:
-    types: [opened, edited]
-
-permissions:
-  issues: write
-  contents: read
-
-jobs:
-  label:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out the repository
-        uses: actions/checkout@v2
-
       - name: Label based on priority
         uses: actions/github-script@v6
         with:
           script: |
             const issue = context.payload.issue;
+            if (!issue) {
+              throw new Error("Missing issue in context payload");
+            }
             const body = issue.body.toLowerCase();
             const labels = [];
 
