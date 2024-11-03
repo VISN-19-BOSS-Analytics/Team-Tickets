@@ -5,7 +5,7 @@ on:
     types: [opened, edited]
 
 permissions:
-  issues: write
+  issues: write, read
 
 jobs:
   label:
