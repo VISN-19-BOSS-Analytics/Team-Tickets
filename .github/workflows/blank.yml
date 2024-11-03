@@ -1,0 +1,37 @@
+name: Set Status Based on Report Type
+
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  set_status:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Determine report type
+        id: report_type
+        run: |
+          if [[ "${{ github.event.issue.title }}" == *"Bug or Data Error""* ]]; then
+            echo "::set-output name=type::Bug"
+          elif [[ "${{ github.event.issue.title }}" == *"Feature Request"* ]]; then
+            echo "::set-output name=type::Feature"
+          else
+            echo "::set-output name=type::Other"
+          fi
+
+      - name: Set status based on report type
+        run: |
+          case "${{ steps.report_type.outputs.type }}" in
+            "Bug")
+              echo "Setting status to 'Backlog'"
+              ;;
+            "Feature")
+              echo "Setting status to 'Backlog'"
+              ;;
+            "Other")
+              echo "Setting status to 'To Do'"
+              ;;
+          esac
