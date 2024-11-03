@@ -14,7 +14,7 @@ jobs:
       - name: Determine report type
         id: report_type
         run: |
-          if [[ "${{ github.event.issue.title }}" == *"Bug or Data Error""* ]]; then
+          if [[ "${{ github.event.issue.title }}" == *"Bug or Data Error"* ]]; then
             echo "::set-output name=type::Bug"
           elif [[ "${{ github.event.issue.title }}" == *"Feature Request"* ]]; then
             echo "::set-output name=type::Feature"
