@@ -1,4 +1,4 @@
-name: Set Status Based on Report Type
+name: Set Status Based on Labels
 
 on:
   issues:
@@ -11,26 +11,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Determine report type
-        id: report_type
+      - name: Determine report label
+        id: report_label
         run: |
-          if [[ "${{ github.event.issue.title }}" == *"Bug or Data Error"* ]]; then
-            echo "type=Bug" >> $GITHUB_ENV
-          elif [[ "${{ github.event.issue.title }}" == *"Feature Request"* ]]; then
-            echo "type=Feature" >> $GITHUB_ENV
-          else
-            echo "type=Other" >> $GITHUB_ENV
+          labels="${{ github.event.issue.labels }}"
+          status="Backlog"
+          for label in $labels; do
+            if [[ "$label" == *"Report Request"* ]]; then
+              status="To Do"
+              break
+            fi
+          done
+          echo "status=$status" >> $GITHUB_ENV
 
-      - name: Set status based on report type
+      - name: Set status based on report label
         run: |
-          case "${{ env.type }}" in
-            "Bug")
-              echo "Setting status to 'Backlog'"
-              ;;
-            "Feature")
-              echo "Setting status to 'Backlog'"
-              ;;
-            "Other")
-              echo "Setting status to 'To Do'"
-              ;;
-          esac
+          echo "Setting status to '${{ env.status }}'"
