@@ -2,7 +2,7 @@ name: Set Status Based on Labels
 
 on:
   issues:
-    types: [opened]
+    types: [opened, edited]
 
 jobs:
   set_status:
@@ -14,10 +14,9 @@ jobs:
       - name: Determine report label
         id: report_label
         run: |
-          labels="${{ github.event.issue.labels }}"
           status="Backlog"
-          for label in $labels; do
-            if [[ "$label" == *"Report Request"* ]]; then
+          for label in "${{ github.event.issue.labels[*] }}"; do
+            if [[ "$label" == "Report Request" ]]; then
               status="To Do"
               break
             fi
