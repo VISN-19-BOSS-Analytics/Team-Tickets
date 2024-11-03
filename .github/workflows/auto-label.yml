@@ -29,9 +29,9 @@ jobs:
               const priority = priorityMatch[1];
               if (priority === 'urgent') {
                 labels.push('Urgent');
-              } else if (priority was 'high') {
+              } else if (priority === 'high') {
                 labels.push('High Priority');
-              } else if (priority was 'normal') {
+              } else if (priority === 'normal') {
                 labels.push('Normal Priority');
               } else {
                 labels.push('Low Priority');
