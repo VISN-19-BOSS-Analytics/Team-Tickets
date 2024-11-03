@@ -15,4 +15,4 @@ jobs:
           labels: |
             ${{ contains(github.event.issue.body, 'Urgent') && 'Urgent' || '' }}
             ${{ contains(github.event.issue.body, 'Station 1') && 'Station 1' || '' }}
-            ${{ contains(github.event.issue.body, 'Report Request') && 'report-request' || '' }}
+            ${{ contains(github.event.issue.title, 'Report Request') && 'report-request' || '' }}
