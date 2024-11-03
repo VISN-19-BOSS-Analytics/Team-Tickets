@@ -1,28 +1,48 @@
-name: Set Status Based on Labels
+name: Update Project Status Based on Label
 
 on:
   issues:
-    types: [opened, edited]
+    types: [opened, labeled]
 
 jobs:
-  set_status:
+  update_project_status:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - name: Check for "Report Request" Label
+        id: check_label
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issueLabels = context.payload.issue.labels.map(label => label.name);
+            return issueLabels.includes("Report Request");
 
-      - name: Determine report label
-        id: report_label
-        run: |
-          status="Backlog"
-          for label in "${{ github.event.issue.labels[*] }}"; do
-            if [[ "$label" == "Report Request" ]]; then
-              status="To Do"
-              break
-            fi
-          done
-          echo "status=$status" >> $GITHUB_ENV
+      - name: Set Project Status to "To Do" if Label is "Report Request"
+        if: steps.check_label.outputs.result == 'true'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { Octokit } = require("@octokit/rest");
+            const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+            
+            // Set the project status to "To Do" based on your project configuration
+            await octokit.projects.updateCard({
+              project_id: PROJECT_ID,
+              column_id: TODO_COLUMN_ID,
+              card_id: context.payload.project_card.id
+            });
 
-      - name: Set status based on report label
-        run: |
-          echo "Setting status to '${{ env.status }}'"
+      - name: Set Project Status to "Backlog" if Label is not "Report Request"
+        if: steps.check_label.outputs.result == 'false'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { Octokit } = require("@octokit/rest");
+            const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+            
+            // Set the project status to "Backlog" based on your project configuration
+            await octokit.projects.updateCard({
+              project_id: PROJECT_ID,
+              column_id: BACKLOG_COLUMN_ID,
+              card_id: context.payload.project_card.id
+            });
