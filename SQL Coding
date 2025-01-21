@@ -1,0 +1,85 @@
+    select RequestServiceSID as from_service
+    into #fromservice
+    from cdwwork.dim.RequestService
+    where
+    sta3n in (436,442,554,575,623,635,660,666)
+    AND
+    servicename not like 'community care%'
+
+    select RequestServiceSID as to_service
+    into #toservice
+    from cdwwork.dim.RequestService
+    where
+    sta3n in (436,442,554,575,623,635,660,666)
+    AND
+    servicename like 'community care%'
+
+select
+Consultsid
+,sta3n
+into #counts
+FROM
+cdwwork.con.Consult_Recent
+where
+sta3n in (436,442,554,575,623,635,660,666)
+and
+torequestservicesid in (select to_service from #toservice)
+AND
+requestdatetime >= cast('20241001' as datetime2(0))
+
+    select distinct b.consultsid
+    ,max(ConsultActivitySID) consultactivitysid
+
+into #vaf
+    from cdwwork.con.consultactivity_recent A
+    join #counts b on b.consultsid = a.Consultsid
+
+where
+a.sta3n in (436,442,554,575,623,635,660,666)
+AND
+a.FromRequestServiceSID in (select from_service from #fromservice)
+AND
+ActivityDateTime >= cast('20241015' as datetime2(0))
+group by b.ConsultSID
+
+
+Select
+a.sta3n
+,a.consultsid
+,case when ConsultActivityComment like '%#vaf#%' then 1
+else 0
+end as VAF
+from 
+#counts A
+join #vaf b on b.ConsultSID = a.ConsultSID
+join CDWWork.SPatient.SConsultActivityComment_Recent c on c.ConsultActivitySID = b.consultactivitysid
+
+
+
+select
+a.consultsid
+,case when b.ConsultActivityComment like '%#VAF#%' then 1
+else 0
+end as vaf
+from #vaf a
+join CDWWork.[SPatient].[SConsultActivityComment_Recent] b on b.ConsultSID = a.ConsultSID
+WHERE
+RequestDateTime >= cast('20241015' as datetime2(0))
+AND
+b.Sta3n  in (436,442,554,575,623,635,660,666)
+
+select DISTINCT a.*
+,b.Activity
+
+from #counts a    
+  LEFT  join cdwwork.con.consultactivity_recent b on b.consultsid = a.ConsultSID
+
+where
+b.sta3n in (436,442,554,575,623,635,660,666)
+AND
+b.FromRequestServiceSID in (select from_service from #fromservice)
+AND
+ActivityDateTime >= cast('20241015' as datetime2(0))
+
+
+DROP TABLE #fromservice,#toservice,#counts,#vaf
